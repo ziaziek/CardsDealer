@@ -6,11 +6,9 @@
 package com.mycompany.cardsdealer;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -45,10 +43,11 @@ public class HoldEmPokerTable extends Table {
     }
 
     private void rankPlayer(RankedPlayer p) {
-        Set<Card> allDeck = new TreeSet<>();
-        allDeck.addAll(p.getHand());
-        allDeck.addAll(this.getCardsOnTable());
-        Ranker r = new Ranker(allDeck);
-        r.isRoyalFlush();
+        try {
+            Ranker r = new Ranker(this.getCardsOnTable(), p.getHand());
+            r.isRoyalFlush();
+        } catch (Exception ex) {
+            Logger.getLogger(HoldEmPokerTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

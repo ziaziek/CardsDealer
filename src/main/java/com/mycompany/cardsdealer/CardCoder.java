@@ -5,6 +5,9 @@
  */
 package com.mycompany.cardsdealer;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * @author pnowicki
@@ -17,5 +20,13 @@ public class CardCoder {
     
     public static int code(Card c){
         return 13 * (c.getColour().ordinal())+(c.getNumber().ordinal());
+    }
+    
+    public static Set<Integer> codeAll(final Set<Card> cards){
+        Set<Integer> r = new HashSet<>();
+        cards.forEach((c) -> {
+            r.add(code(c));
+        });
+        return r;
     }
 }

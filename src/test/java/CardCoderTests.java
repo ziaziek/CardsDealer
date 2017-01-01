@@ -8,13 +8,14 @@ import com.mycompany.cardsdealer.Card;
 import com.mycompany.cardsdealer.CardCoder;
 import com.mycompany.cardsdealer.CardColour;
 import com.mycompany.cardsdealer.CardNumber;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -60,5 +61,19 @@ public class CardCoderTests {
         Assert.assertEquals(0, CardCoder.code(new Card(CardColour.CLUBS, CardNumber.ONE)));
         Assert.assertEquals(15, CardCoder.code(new Card(CardColour.HEART, CardNumber.THREE)));
         Assert.assertEquals(51, CardCoder.code(new Card(CardColour.SPADE, CardNumber.KING)));
+    }
+    
+    @Test
+    public void codeSetTest(){
+        Set<Card> cs = new HashSet<>();
+        cs.add(new Card(CardColour.CLUBS, CardNumber.ONE));
+        cs.add(new Card(CardColour.HEART, CardNumber.THREE));
+        cs.add(new Card(CardColour.CLUBS, CardNumber.SEVEN));
+        cs.add(new Card(CardColour.CLUBS, CardNumber.EIGHT));
+        Set<Integer> p = CardCoder.codeAll(cs);
+        Assert.assertNotNull(p);
+        Assert.assertTrue(!p.isEmpty());
+        Assert.assertTrue(p.contains(0));
+        Assert.assertTrue(p.contains(15));
     }
 }

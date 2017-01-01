@@ -5,8 +5,9 @@
  */
 package com.mycompany.cardsdealer;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -15,16 +16,16 @@ import java.util.List;
 public abstract class Table {
     
     protected CardStack stack;
-    protected List<Card> cardsOnTable;
+    protected Set<Card> cardsOnTable;
 
-    public List<Card> getCardsOnTable() {
+    public Set<Card> getCardsOnTable() {
         return cardsOnTable;
     }
     
     protected List<Player> players;
     
     public Table(){
-        cardsOnTable = new ArrayList<>();
+        cardsOnTable = new HashSet<>();
     };
     
     public Table(CardStack stack, List<Player> players){

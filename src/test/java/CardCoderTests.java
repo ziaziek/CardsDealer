@@ -45,10 +45,10 @@ public class CardCoderTests {
     @Test
     public void decodeTest(){
         Card[] aces = new Card[4];
-        aces[0]=new Card(CardColour.CLUBS, CardNumber.ONE);
-        aces[1] = new Card(CardColour.HEART, CardNumber.ONE);
-        aces[2] = new Card(CardColour.DIAMOMND, CardNumber.ONE);
-        aces[3] = new Card(CardColour.SPADE, CardNumber.ONE);
+        aces[0]=new Card(CardColour.CLUBS, CardNumber.ACE);
+        aces[1] = new Card(CardColour.HEART, CardNumber.ACE);
+        aces[2] = new Card(CardColour.DIAMOMND, CardNumber.ACE);
+        aces[3] = new Card(CardColour.SPADE, CardNumber.ACE);
         Assert.assertEquals(aces[0], CardCoder.decode(0));
         Assert.assertEquals(aces[1], CardCoder.decode(13));
         Assert.assertEquals(aces[2], CardCoder.decode(26));
@@ -58,7 +58,7 @@ public class CardCoderTests {
     
     @Test
     public void codeTest(){
-        Assert.assertEquals(0, CardCoder.code(new Card(CardColour.CLUBS, CardNumber.ONE)));
+        Assert.assertEquals(0, CardCoder.code(new Card(CardColour.CLUBS, CardNumber.ACE)));
         Assert.assertEquals(15, CardCoder.code(new Card(CardColour.HEART, CardNumber.THREE)));
         Assert.assertEquals(51, CardCoder.code(new Card(CardColour.SPADE, CardNumber.KING)));
     }
@@ -66,7 +66,7 @@ public class CardCoderTests {
     @Test
     public void codeSetTest(){
         Set<Card> cs = new HashSet<>();
-        cs.add(new Card(CardColour.CLUBS, CardNumber.ONE));
+        cs.add(new Card(CardColour.CLUBS, CardNumber.ACE));
         cs.add(new Card(CardColour.HEART, CardNumber.THREE));
         cs.add(new Card(CardColour.CLUBS, CardNumber.SEVEN));
         cs.add(new Card(CardColour.CLUBS, CardNumber.EIGHT));

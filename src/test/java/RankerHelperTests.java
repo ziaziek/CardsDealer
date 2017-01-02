@@ -14,6 +14,7 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,22 +47,47 @@ public class RankerHelperTests {
     @Test
     public void sameColourTest(){
         Set<Card> cs = new HashSet<>();
-        cs.add(new Card(CardColour.CLUBS, CardNumber.ONE));
+        cs.add(new Card(CardColour.CLUBS, CardNumber.ACE));
         cs.add(new Card(CardColour.CLUBS, CardNumber.THREE));
         cs.add(new Card(CardColour.CLUBS, CardNumber.SEVEN));
         cs.add(new Card(CardColour.CLUBS, CardNumber.EIGHT));
         Assert.assertTrue(RankerHelper.sameColour(CardCoder.codeAll(cs)));
-        cs.add(new Card(CardColour.DIAMOMND, CardNumber.ONE));
+        cs.add(new Card(CardColour.DIAMOMND, CardNumber.ACE));
         Assert.assertFalse(RankerHelper.sameColour(CardCoder.codeAll(cs)));
     }
     
     @Test
-    public void cardsInSequenceTest(){
-        
+    public void cardsInSequenceTest() throws Exception{
+        Set<Card> cs = new HashSet<>();
+        cs.add(new Card(CardColour.CLUBS, CardNumber.SIX));
+        cs.add(new Card(CardColour.CLUBS, CardNumber.THREE));
+        cs.add(new Card(CardColour.CLUBS, CardNumber.TWO));
+        cs.add(new Card(CardColour.CLUBS, CardNumber.FOUR));
+        cs.add(new Card(CardColour.DIAMOMND, CardNumber.FIVE));
+        Assert.assertTrue(RankerHelper.cardsInSequence(CardCoder.codeAll(cs)));
+        cs.remove(new Card(CardColour.CLUBS, CardNumber.TWO));
+        cs.add(new Card(CardColour.HEART, CardNumber.EIGHT));
+        Assert.assertFalse(RankerHelper.cardsInSequence(CardCoder.codeAll(cs)));
+        cs.remove(new Card(CardColour.HEART, CardNumber.EIGHT));
+        cs.add(new Card(CardColour.HEART, CardNumber.SEVEN));
+        Assert.assertTrue(RankerHelper.cardsInSequence(CardCoder.codeAll(cs)));
     }
     
     @Test
-    public void getSingleMultiTest(){
-        
+    public void getSingleMultiTest() throws Exception{
+        Set<Card> cs = new HashSet<>();
+        cs.add(new Card(CardColour.CLUBS, CardNumber.ACE));
+        cs.add(new Card(CardColour.DIAMOMND, CardNumber.ACE));
+        cs.add(new Card(CardColour.HEART, CardNumber.ACE));
+        cs.add(new Card(CardColour.SPADE, CardNumber.ACE));
+        Assert.assertEquals(48, RankerHelper.getSingleMulti(CardCoder.codeAll(cs), 4));
+        cs.remove(new Card(CardColour.CLUBS, CardNumber.ACE));
+        Assert.assertEquals(36 , RankerHelper.getSingleMulti(CardCoder.codeAll(cs), 3));
+        try {
+            Assert.assertNotEquals(4 , RankerHelper.getSingleMulti(CardCoder.codeAll(cs), 4));
+            fail("This should fail. Wrong number of cards.");
+        } catch(Exception e){
+            Assert.assertTrue(true);
+        }
     }
 }

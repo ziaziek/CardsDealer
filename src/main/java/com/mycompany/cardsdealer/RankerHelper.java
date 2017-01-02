@@ -17,14 +17,14 @@ public class RankerHelper {
     
     /**
      * Produces a sum of the cards value if all provided have equal value
-     * @param pair
-     * @param n
+     * @param pair a set of cards to search
+     * @param n number of cards to look up (2 - a pair, 3- three, etc.)
      * @return
      * @throws Exception 
      */
     public static int getSingleMulti(Set<Integer> pair, int n) throws Exception{
         if(pair.size()==n){
-            int p = pair.stream().mapToInt(i->i).sum();
+            int p = pair.stream().mapToInt(i->i%13).sum();
             return p%n==0 ? p : 0;
         } else {
             throw new Exception("A "+ n + " element set must be provided to establish a pair.");
@@ -40,14 +40,20 @@ public class RankerHelper {
         return cards.stream().mapToInt(i->i/13).distinct().count()==1;
     }
     
+    /**
+     * Checks if the given set of 5 cards contains cards in sequence
+     * @param cards
+     * @return
+     * @throws Exception 
+     */
     public static boolean cardsInSequence(Set<Integer> cards) throws Exception{
         if(cards.size()==5){
-            TreeSet<Integer> sint = new TreeSet(cards);
+            TreeSet<Integer> sint = new TreeSet(cards.stream().map(i->i%13).collect(Collectors.toSet()));
             int sum;
-            sum = cards.stream().collect(Collectors.summingInt(i->i));
-            return (sum==sint.size()*(sint.first()+sint.last())/2);
+            sum = sint.stream().mapToInt(i->i).sum();
+            return (sum==sint.size()*(sint.first()%13+sint.last()%13)/2);
         } else {
-            throw new Exception("More than 5 cards examined for a sequence.");
+            throw new Exception("There must be 5 cards examined for a sequence.");
         }
     }
 }

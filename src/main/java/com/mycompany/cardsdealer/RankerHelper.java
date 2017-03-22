@@ -20,14 +20,13 @@ public class RankerHelper {
      * @param pair a set of cards to search
      * @param n number of cards to look up (2 - a pair, 3- three, etc.)
      * @return
-     * @throws Exception 
      */
-    public static int getSingleMulti(Set<Integer> pair, int n) throws Exception{
-        if(pair.size()==n){
+    public static int getSingleMulti(Set<Integer> pair, int n){
+        if(pair.size()==n && pair.stream().mapToInt(x -> x%13).distinct().count()==1){
             int p = pair.stream().mapToInt(i->i%13).sum();
-            return p%n==0 ? p : 0;
+            return p;
         } else {
-            throw new Exception("A "+ n + " element set must be provided to establish a pair.");
+            return 0;
         }
     }
     

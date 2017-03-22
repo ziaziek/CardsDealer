@@ -7,12 +7,14 @@ package com.mycompany.cardsdealer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Provide a set of cards on the table and the hand
@@ -27,12 +29,12 @@ public class Ranker {
     private final List<Set<Integer>> fiveCardPermutations;
 
     public Ranker(final Set<Card> deckCards, final Set<Card> handCards) throws Exception {
-        if (deckCards == null || handCards == null || deckCards.size() != 5  || handCards.size()!=2) {
-            throw new Exception("The size of the cards stack should be 7.");
+        if (deckCards == null || handCards == null || deckCards.size() != 5 || handCards.size() != 2) {
+            throw new Exception("The size of the deck cards stack should be 5 and the hand stack 2.");
         } else {
             cardsInt = new TreeSet<>();
             deck = new TreeSet<>();
-            kickers=new TreeSet<>();
+            kickers = new TreeSet<>();
             deckCards.stream().forEach(c -> deck.add(CardCoder.code(c)));
             handCards.stream().forEach(c -> kickers.add(CardCoder.code(c)));
             cardsInt.addAll(deck);
@@ -43,6 +45,8 @@ public class Ranker {
     }
 
     public int rankCardSet() {
+        //Ranking starts from the highest possible rank to test against
+        
         return 0;
     }
 
@@ -93,24 +97,48 @@ public class Ranker {
     }
 
     protected int isFullHouse() {
-        //first check if there is a three of a kind and if there is a two of a kind, and there is no 4 of a kind for every 5-card permutation. 
-        //Then make sure that getSingleMulti(permutation[i]) == 0 - all of the cards are not equal, so there is no 5 of a kind.
-
-        return 6;
+        //for each 5-card combination check that there are only 2-ranked sets
+        for (Set<Integer> s : fiveCardPermutations) {
+            TreeSet<Integer> p = new TreeSet<>(s.stream().mapToInt(c -> c % 13).boxed().collect(Collectors.toSet()));
+            if (p.stream().distinct().count() == 2) {
+                //See if the cards frequencies are 2, 3 or 3,2
+                if ((Collections.frequency(p, p.first()) == 3 && Collections.frequency(p, p.last()) == 2) || (Collections.frequency(p, p.first()) == 2 && Collections.frequency(p, p.last()) == 2)) {
+                    return 6 * p.stream().mapToInt(c -> c).sum();
+                }
+            }
+        }
+        return 0;
     }
 
+    //same suit
     protected int isFlush() {
-        return 5;
+        for (Set<Integer> s : fiveCardPermutations) {
+            if (RankerHelper.sameColour(s)) {
+                return 5 * s.stream().mapToInt(c -> c).sum();
+            }
+        }
+        return 0;
     }
 
-    protected int isStraight() {
-        return 4;
+    protected int isStraight() throws Exception {
+        for (Set<Integer> s : fiveCardPermutations) {
+            if (RankerHelper.cardsInSequence(s) && !RankerHelper.sameColour(s)) {
+                return 4 * s.stream().mapToInt(c -> c).sum();
+            }
+        }
+        return 0;
     }
 
     protected int isThreeOfAKind() {
 
         try {
-            return RankerHelper.getSingleMulti(cardsInt, 3);
+            for(Set<Integer> cs : buildPermutations(cardsInt, 3)){
+                int v = RankerHelper.getSingleMulti(cs, 3);
+                if(v>0){
+                    return v;
+                }
+            }
+            return 0;
         } catch (Exception ex) {
             Logger.getLogger(Ranker.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
@@ -118,28 +146,32 @@ public class Ranker {
     }
 
     protected int isTwoPair() {
-        TreeSet<Integer> cardsOrdered = new TreeSet<>();
+        List<Integer> cardsRanks = new ArrayList<>();
         cardsInt.forEach((p) -> {
-            cardsOrdered.add(p%13);
+            cardsRanks.add(p % 13);
         });
-        if(cardsOrdered.stream().distinct().count()==5){//We've got two pairs
-            int v = -1; int np=0;
-        for(int i: cardsOrdered){
-            if(i==v){
-                np+=2*v;
-                v=0;
-            } else {
-                v=i;
-            }
+        cardsRanks.stream().forEach(x -> System.out.print(x+","));
+        Set<Integer> p = new TreeSet<>(cardsRanks.stream().distinct().collect(Collectors.toSet()));
+        if (p.stream().count() == 5) {//We've got two pairs
+            int np = 0;
+            np = cardsRanks.stream().filter((i) -> (Collections.frequency(cardsRanks, i)==2)).map((i) -> 2 * i).reduce(np, Integer::sum);
+            return np;
+        } else {
+            return 0;
         }
-        }
-        
-        return 2;
     }
 
     protected int isPair() {
         try {
-            return RankerHelper.getSingleMulti(cardsInt, 2);
+            for (Set<Integer> s : buildPermutations(cardsInt, 2)) {
+                s.stream().forEach(x -> System.out.print(x + ","));
+                int sint = RankerHelper.getSingleMulti(s, 2);
+                if (sint > 0) {
+                    return sint;
+                }
+                System.out.println(" Sint=" + sint);
+            }
+            return 0;
         } catch (Exception ex) {
             Logger.getLogger(Ranker.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
@@ -147,6 +179,7 @@ public class Ranker {
     }
 
     private List<Set<Integer>> buildPermutations(Set<Integer> cards, int setSize) {
+        cards.stream().forEach(x -> System.out.print(x + ","));
         List<Set<Integer>> ret = new ArrayList<>();
         for (int i = 0; i < (1 << cards.size()); i++) {
             Set processed = processSubset(cardsInt, i);
@@ -154,17 +187,19 @@ public class Ranker {
                 ret.add(processed);
             }
         }
+        System.out.println();
         return ret;
     }
 
     private Set<Integer> processSubset(Set<Integer> set, int signature) {
         Set<Integer> ret = new TreeSet<>();
         int mask = 1;
-        int[] pit = new int[set.size() - 1];
+        int[] pit = new int[set.size()];
         Iterator<Integer> piter = set.iterator();
         int v = 0;
         while (v != pit.length && piter.hasNext()) {
             pit[v] = piter.next();
+            v++;
         }
         for (int i = 0; i < set.size(); i++) {
             if ((mask & signature) > 0) {

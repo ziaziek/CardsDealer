@@ -14,7 +14,6 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -83,11 +82,5 @@ public class RankerHelperTests {
         Assert.assertEquals(48, RankerHelper.getSingleMulti(CardCoder.codeAll(cs), 4));
         cs.remove(new Card(CardColour.CLUBS, CardNumber.ACE));
         Assert.assertEquals(36 , RankerHelper.getSingleMulti(CardCoder.codeAll(cs), 3));
-        try {
-            Assert.assertNotEquals(4 , RankerHelper.getSingleMulti(CardCoder.codeAll(cs), 4));
-            fail("This should fail. Wrong number of cards.");
-        } catch(Exception e){
-            Assert.assertTrue(true);
-        }
     }
 }

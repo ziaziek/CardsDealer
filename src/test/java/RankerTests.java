@@ -43,6 +43,21 @@ public class RankerTests {
         protected int isThreeOfAKind() {
             return super.isThreeOfAKind(); //To change body of generated methods, choose Tools | Templates.
         }
+
+        @Override
+        protected int isFourOfAKind() {
+            return super.isFourOfAKind(); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        protected int isFullHouse() {
+            return super.isFullHouse(); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        protected int isStraight() throws Exception {
+            return super.isStraight(); //To change body of generated methods, choose Tools | Templates.
+        }
         
         
         
@@ -115,5 +130,59 @@ public class RankerTests {
         h.add(new Card(CardColour.SPADE, CardNumber.ACE));
         RankerExt r = new RankerExt(c, h);
         Assert.assertTrue(r.isThreeOfAKind()>0);
+        h.remove(new Card(CardColour.SPADE, CardNumber.ACE));
+        h.add(new Card(CardColour.HEART, CardNumber.ACE));
+        Assert.assertTrue(r.isThreeOfAKind()>0);
+    }
+    
+    @Test
+    public void testFourOfAKind() throws Exception{
+        Set<Card> c = new HashSet<>();
+        Set<Card> h = new HashSet<>();
+        c.add(new Card(CardColour.CLUBS, CardNumber.ACE));
+        c.add(new Card(CardColour.DIAMOMND, CardNumber.ACE));
+        c.add(new Card(CardColour.CLUBS, CardNumber.FOUR));
+        c.add(new Card(CardColour.HEART, CardNumber.ACE));
+        c.add(new Card(CardColour.CLUBS, CardNumber.JACK));
+        h.add(new Card(CardColour.HEART, CardNumber.NINE));
+        h.add(new Card(CardColour.SPADE, CardNumber.ACE));
+        RankerExt r = new RankerExt(c, h);
+        Assert.assertTrue(r.isFourOfAKind()>0);
+    }
+    
+    
+    @Test
+    public void testFullHouse() throws Exception{
+        Set<Card> c = new HashSet<>();
+        Set<Card> h = new HashSet<>();
+        c.add(new Card(CardColour.CLUBS, CardNumber.ACE));
+        c.add(new Card(CardColour.DIAMOMND, CardNumber.ACE));
+        c.add(new Card(CardColour.CLUBS, CardNumber.NINE));
+        c.add(new Card(CardColour.HEART, CardNumber.ACE));
+        c.add(new Card(CardColour.CLUBS, CardNumber.JACK));
+        h.add(new Card(CardColour.HEART, CardNumber.NINE));
+        h.add(new Card(CardColour.SPADE, CardNumber.ACE));
+        RankerExt r = new RankerExt(c, h);
+        Assert.assertTrue(r.isThreeOfAKind()>0);
+        Assert.assertTrue(r.isFourOfAKind()>0); //out of interest, this should also pass
+    }
+    
+    @Test
+    public void testStraight() throws Exception{
+        Set<Card> c = new HashSet<>();
+        Set<Card> h = new HashSet<>();
+        c.add(new Card(CardColour.CLUBS, CardNumber.TWO));
+        c.add(new Card(CardColour.DIAMOMND, CardNumber.QUEEN));
+        c.add(new Card(CardColour.CLUBS, CardNumber.THREE));
+        c.add(new Card(CardColour.CLUBS, CardNumber.FOUR));
+        c.add(new Card(CardColour.CLUBS, CardNumber.JACK));
+        h.add(new Card(CardColour.CLUBS, CardNumber.FIVE));
+        h.add(new Card(CardColour.CLUBS, CardNumber.SIX));
+        RankerExt r = new RankerExt(c, h);
+        Assert.assertFalse(r.isStraight()>0);
+        c.remove(new Card(CardColour.CLUBS, CardNumber.TWO));
+        c.add(new Card(CardColour.HEART, CardNumber.TWO));
+        r = new RankerExt(c, h);
+        Assert.assertTrue(r.isStraight()>0);
     }
 }

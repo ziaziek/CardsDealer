@@ -48,9 +48,15 @@ public class RankerHelper {
     public static boolean cardsInSequence(Set<Integer> cards) throws Exception{
         if(cards.size()==5){
             TreeSet<Integer> sint = new TreeSet(cards.stream().map(i->i%13).collect(Collectors.toSet()));
-            int sum;
-            sum = sint.stream().mapToInt(i->i).sum();
-            return (sum==sint.size()*(sint.first()%13+sint.last()%13)/2);
+            int p = -1;
+            for(Integer i: sint){
+                if(p!=-1 && (i-p)!=1){
+                    return false;
+                } else {
+                    p=i;
+                }
+            }
+            return sint.size()==cards.size(); //return only this condition as the sequence has already been confirmed or denied.
         } else {
             throw new Exception("There must be 5 cards examined for a sequence.");
         }

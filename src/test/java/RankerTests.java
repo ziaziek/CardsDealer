@@ -58,10 +58,24 @@ public class RankerTests {
         protected int isStraight() throws Exception {
             return super.isStraight(); //To change body of generated methods, choose Tools | Templates.
         }
-        
-        
+
+        @Override
+        protected int isFlush() {
+            return super.isFlush(); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        protected int isStraightFlush() throws Exception {
+            return super.isStraightFlush(); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        protected int isRoyalFlush() throws Exception {
+            return super.isRoyalFlush(); //To change body of generated methods, choose Tools | Templates.
+        }
         
     }
+    
     public RankerTests() {
     }
     
@@ -184,5 +198,70 @@ public class RankerTests {
         c.add(new Card(CardColour.HEART, CardNumber.TWO));
         r = new RankerExt(c, h);
         Assert.assertTrue(r.isStraight()>0);
+    }
+    
+    @Test
+    public void testFlush() throws Exception{
+        Set<Card> c = new HashSet<>();
+        Set<Card> h = new HashSet<>();
+        c.add(new Card(CardColour.CLUBS, CardNumber.TWO));
+        c.add(new Card(CardColour.DIAMOMND, CardNumber.QUEEN));
+        c.add(new Card(CardColour.CLUBS, CardNumber.THREE));
+        c.add(new Card(CardColour.CLUBS, CardNumber.FOUR));
+        c.add(new Card(CardColour.HEART, CardNumber.JACK));
+        h.add(new Card(CardColour.CLUBS, CardNumber.FIVE));
+        h.add(new Card(CardColour.CLUBS, CardNumber.SIX));
+        RankerExt r = new RankerExt(c, h);
+        Assert.assertTrue(r.isFlush()>0);
+        c.remove(new Card(CardColour.CLUBS, CardNumber.THREE));
+        c.add(new Card(CardColour.HEART, CardNumber.THREE));
+        r = new RankerExt(c, h);
+        Assert.assertFalse(r.isFlush()>0);
+    }
+    
+    @Test
+    public void testStraightFlush() throws Exception{
+        Set<Card> c = new HashSet<>();
+        Set<Card> h = new HashSet<>();
+        c.add(new Card(CardColour.CLUBS, CardNumber.TWO));
+        c.add(new Card(CardColour.DIAMOMND, CardNumber.QUEEN));
+        c.add(new Card(CardColour.CLUBS, CardNumber.THREE));
+        c.add(new Card(CardColour.CLUBS, CardNumber.FOUR));
+        c.add(new Card(CardColour.CLUBS, CardNumber.JACK));
+        h.add(new Card(CardColour.CLUBS, CardNumber.FIVE));
+        h.add(new Card(CardColour.CLUBS, CardNumber.SIX));
+        RankerExt r = new RankerExt(c, h);
+        Assert.assertTrue(r.isStraightFlush()>0);
+        c.remove(new Card(CardColour.CLUBS, CardNumber.TWO));
+        c.add(new Card(CardColour.CLUBS, CardNumber.ACE));
+        r = new RankerExt(c, h);
+        Assert.assertFalse(r.isStraightFlush()>0);
+    }
+    
+    @Test
+    public void testRoyalFlush() throws Exception{
+        Set<Card> c = new HashSet<>();
+        Set<Card> h = new HashSet<>();
+        c.add(new Card(CardColour.CLUBS, CardNumber.TWO));
+        c.add(new Card(CardColour.DIAMOMND, CardNumber.QUEEN));
+        c.add(new Card(CardColour.CLUBS, CardNumber.THREE));
+        c.add(new Card(CardColour.CLUBS, CardNumber.FOUR));
+        c.add(new Card(CardColour.CLUBS, CardNumber.JACK));
+        h.add(new Card(CardColour.CLUBS, CardNumber.FIVE));
+        h.add(new Card(CardColour.CLUBS, CardNumber.SIX));
+        RankerExt r = new RankerExt(c, h);
+        Assert.assertFalse(r.isRoyalFlush()>0);
+        c = new HashSet<>();
+        h = new HashSet<>();
+        c.add(new Card(CardColour.CLUBS, CardNumber.QUEEN));
+        c.add(new Card(CardColour.CLUBS, CardNumber.ACE));
+        c.add(new Card(CardColour.CLUBS, CardNumber.TEN));
+        c.add(new Card(CardColour.DIAMOMND, CardNumber.FIVE));
+        c.add(new Card(CardColour.HEART, CardNumber.NINE));
+        h.add(new Card(CardColour.CLUBS, CardNumber.JACK));
+        h.add(new Card(CardColour.CLUBS, CardNumber.KING));
+        r = new RankerExt(c, h);
+        Assert.assertTrue(r.isRoyalFlush()>0);
+        
     }
 }

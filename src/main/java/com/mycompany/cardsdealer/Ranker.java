@@ -6,7 +6,6 @@
 package com.mycompany.cardsdealer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -50,25 +49,24 @@ public class Ranker {
         return 0;
     }
 
-    protected int isRoyalFlush() {
+        protected int isRoyalFlush() throws Exception {
         //of all those cards, best set will have to be picked. This will be done from the top of the hierarchy
         //is there a poker? (13, 14, 12, 11, 1)
-        int i = 0;
-        while (i < 4 && !cardsInt.containsAll(Arrays.asList(i * 13 + 13, i * 13 + 14, i * 13 + 12, i * 13 + 11, i * 13 + 1))) {
-            i++;
+        for(Set<Integer> s : fiveCardPermutations){
+            if(RankerHelper.cardsInSequence(s) && RankerHelper.sameColour(s) && s.stream().mapToInt(c->c%13).distinct().boxed().collect(Collectors.toList()).contains(12)){
+                return 1000;
+            }
         }
-        return i < 4 ? 100 : 0;
+        return 0;
     }
 
-    protected int isStraightFlush() {
-        return RankerHelper.sameColour(cardsInt) && fiveCardPermutations.stream().anyMatch(s -> {
-            try {
-                RankerHelper.cardsInSequence(s);
-            } catch (Exception ex) {
-                Logger.getLogger(Ranker.class.getName()).log(Level.SEVERE, null, ex);
+    protected int isStraightFlush() throws Exception {
+        for(Set<Integer> s: fiveCardPermutations){
+            if(RankerHelper.cardsInSequence(s) && RankerHelper.sameColour(s)){
+                return 90;
             }
-            return false;
-        }) ? 90 : 0;
+        }
+        return 0;
     }
 
     protected int isFourOfAKind() {

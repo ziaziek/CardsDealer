@@ -107,7 +107,9 @@ public class RankerTests {
         h.add(new Card(CardColour.CLUBS, CardNumber.KING));
         h.add(new Card(CardColour.SPADE, CardNumber.FIVE));
         RankerExt r = new RankerExt(c, h);
-        Assert.assertTrue(r.isPair()>0);
+        int k = r.isPair();
+        Assert.assertTrue(k>0);
+        Assert.assertEquals(202, k);
         c.remove(new Card(CardColour.CLUBS, CardNumber.THREE));
         c.add(new Card(CardColour.CLUBS, CardNumber.SEVEN));
         Assert.assertFalse(new RankerExt(c, h).isPair()>0);
@@ -125,7 +127,9 @@ public class RankerTests {
         h.add(new Card(CardColour.CLUBS, CardNumber.KING));
         h.add(new Card(CardColour.SPADE, CardNumber.FIVE));
         RankerExt r = new RankerExt(c, h);
-        Assert.assertTrue(r.isTwoPair()>0);
+        int k= r.isTwoPair();
+        Assert.assertTrue(k>0);
+        Assert.assertEquals(320, k);
         c.remove(new Card(CardColour.CLUBS, CardNumber.JACK));
         c.add(new Card(CardColour.CLUBS, CardNumber.SEVEN));
         Assert.assertFalse(new RankerExt(c, h).isTwoPair()>0);
@@ -143,7 +147,9 @@ public class RankerTests {
         h.add(new Card(CardColour.HEART, CardNumber.NINE));
         h.add(new Card(CardColour.SPADE, CardNumber.ACE));
         RankerExt r = new RankerExt(c, h);
-        Assert.assertTrue(r.isThreeOfAKind()>0);
+        int k = r.isThreeOfAKind();
+        Assert.assertTrue(k>0);
+        Assert.assertEquals(436, k);
         h.remove(new Card(CardColour.SPADE, CardNumber.ACE));
         h.add(new Card(CardColour.HEART, CardNumber.ACE));
         Assert.assertTrue(r.isThreeOfAKind()>0);
@@ -161,7 +167,9 @@ public class RankerTests {
         h.add(new Card(CardColour.HEART, CardNumber.NINE));
         h.add(new Card(CardColour.SPADE, CardNumber.ACE));
         RankerExt r = new RankerExt(c, h);
-        Assert.assertTrue(r.isFourOfAKind()>0);
+        int k= r.isFourOfAKind();
+        Assert.assertTrue(k>0);
+        Assert.assertEquals(848, k);
     }
     
     
@@ -177,7 +185,9 @@ public class RankerTests {
         h.add(new Card(CardColour.HEART, CardNumber.NINE));
         h.add(new Card(CardColour.SPADE, CardNumber.ACE));
         RankerExt r = new RankerExt(c, h);
-        Assert.assertTrue(r.isThreeOfAKind()>0);
+        int k = r.isFullHouse();
+        Assert.assertTrue(k>0);
+        Assert.assertEquals(750, k);
         Assert.assertTrue(r.isFourOfAKind()>0); //out of interest, this should also pass
     }
     
@@ -192,12 +202,14 @@ public class RankerTests {
         c.add(new Card(CardColour.CLUBS, CardNumber.JACK));
         h.add(new Card(CardColour.CLUBS, CardNumber.FIVE));
         h.add(new Card(CardColour.CLUBS, CardNumber.SIX));
-        RankerExt r = new RankerExt(c, h);
+        RankerExt r = new RankerExt(c, h);  
         Assert.assertFalse(r.isStraight()>0);
         c.remove(new Card(CardColour.CLUBS, CardNumber.TWO));
         c.add(new Card(CardColour.HEART, CardNumber.TWO));
         r = new RankerExt(c, h);
-        Assert.assertTrue(r.isStraight()>0);
+        int k = r.isStraight();
+        Assert.assertTrue(k>0);
+        Assert.assertEquals(510, k);
     }
     
     @Test
@@ -212,7 +224,9 @@ public class RankerTests {
         h.add(new Card(CardColour.CLUBS, CardNumber.FIVE));
         h.add(new Card(CardColour.CLUBS, CardNumber.SIX));
         RankerExt r = new RankerExt(c, h);
-        Assert.assertTrue(r.isFlush()>0);
+        int k = r.isFlush();
+        Assert.assertTrue(k>0);
+        Assert.assertEquals(610, k);
         c.remove(new Card(CardColour.CLUBS, CardNumber.THREE));
         c.add(new Card(CardColour.HEART, CardNumber.THREE));
         r = new RankerExt(c, h);
@@ -231,7 +245,9 @@ public class RankerTests {
         h.add(new Card(CardColour.CLUBS, CardNumber.FIVE));
         h.add(new Card(CardColour.CLUBS, CardNumber.SIX));
         RankerExt r = new RankerExt(c, h);
-        Assert.assertTrue(r.isStraightFlush()>0);
+        int k = r.isStraightFlush();
+        Assert.assertTrue(k>0);
+        Assert.assertEquals(910, k);
         c.remove(new Card(CardColour.CLUBS, CardNumber.TWO));
         c.add(new Card(CardColour.CLUBS, CardNumber.ACE));
         r = new RankerExt(c, h);
@@ -261,7 +277,42 @@ public class RankerTests {
         h.add(new Card(CardColour.CLUBS, CardNumber.JACK));
         h.add(new Card(CardColour.CLUBS, CardNumber.KING));
         r = new RankerExt(c, h);
-        Assert.assertTrue(r.isRoyalFlush()>0);
-        
+        int k = r.isRoyalFlush();
+        Assert.assertTrue(k>0);
+        Assert.assertEquals(1000, k);
+    }
+    
+    @Test
+    public void tetRankCardSet() throws Exception{
+        // 1
+        Set<Card> c = new HashSet<>();
+        Set<Card> h = new HashSet<>();
+        c.add(new Card(CardColour.CLUBS, CardNumber.TWO));
+        c.add(new Card(CardColour.DIAMOMND, CardNumber.QUEEN));
+        c.add(new Card(CardColour.CLUBS, CardNumber.THREE));
+        c.add(new Card(CardColour.CLUBS, CardNumber.FOUR));
+        c.add(new Card(CardColour.CLUBS, CardNumber.JACK));
+        h.add(new Card(CardColour.CLUBS, CardNumber.FIVE));
+        h.add(new Card(CardColour.CLUBS, CardNumber.SIX));
+        RankerExt r = new RankerExt(c, h);
+        Assert.assertEquals(914, r.rankCardSet());
+        //2
+        c = new HashSet<>();
+        h = new HashSet<>();
+        c.add(new Card(CardColour.CLUBS, CardNumber.ACE));
+        c.add(new Card(CardColour.DIAMOMND, CardNumber.ACE));
+        c.add(new Card(CardColour.CLUBS, CardNumber.FOUR));
+        c.add(new Card(CardColour.SPADE, CardNumber.JACK));
+        c.add(new Card(CardColour.CLUBS, CardNumber.JACK));
+        h.add(new Card(CardColour.HEART, CardNumber.NINE));
+        h.add(new Card(CardColour.SPADE, CardNumber.ACE));
+        r = new RankerExt(c, h);
+        Assert.assertEquals(766, r.rankCardSet());
+        //3 Test which player wins
+        Set<Card> h1 = new HashSet<>();
+        h1.add(new Card(CardColour.SPADE, CardNumber.FOUR));
+        h1.add(new Card(CardColour.DIAMOMND, CardNumber.QUEEN));
+        Ranker r1 = new Ranker(c, h1);
+        Assert.assertTrue(r.rankCardSet() > r1.rankCardSet());
     }
 }

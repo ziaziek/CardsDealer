@@ -5,25 +5,57 @@
  */
 package com.mycompany.cardsdealer;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  *
  * @author pnowicki
  */
-public class AbstractCardDisplayStack implements CardStack {
+public abstract class AbstractCardDisplayStack implements CardStack {
 
+    
+    protected Queue<Card> cards;
+
+    public Queue<Card> getCards() {
+        return cards;
+    }
+    
+    /**
+     * Initialises the stack and its card stack
+     */
+    protected abstract void init();
+    
     @Override
     public Card[] draw(int numberOfCards) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int maxDraw = cards.size()>numberOfCards ? numberOfCards : cards.size();
+        Card[] ret = new Card[maxDraw];
+        for(int i=0; i<maxDraw; i++){
+            ret[i]=cards.poll();
+        }
+        return ret;
     }
 
+    /**
+     * Shuffles cards within the current stack
+     */
     @Override
     public void shuffle() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        LinkedList<Card> cc = new LinkedList<>(cards);
+        Collections.shuffle(cc);
+        cards=cc;
     }
 
+    /**
+     * Returns the card to the stack
+     * @param c 
+     */
     @Override
     public void returnCard(Card c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(c!=null){
+            cards.offer(c);
+        }
     }
     
     

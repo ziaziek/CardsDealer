@@ -22,6 +22,9 @@ public abstract class AbstractCardDisplayStack implements CardStack {
         return cards;
     }
     
+    public AbstractCardDisplayStack(){
+        init();
+    }
     /**
      * Initialises the stack and its card stack
      */
